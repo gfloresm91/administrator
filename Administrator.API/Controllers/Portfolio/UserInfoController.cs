@@ -2,12 +2,14 @@
 using Administrator.Application.Features.Portfolio.UsersInfo.Commands.DeleteUserInfo;
 using Administrator.Application.Features.Portfolio.UsersInfo.Commands.UpdateUserInfo;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace Administrator.API.Controllers.Portfolio
 {
     [ApiController]
+    [Authorize]
     [Route("api/v1/[controller]")]
     public class UserInfoController : ControllerBase
     {
