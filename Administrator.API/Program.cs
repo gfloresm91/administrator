@@ -1,3 +1,4 @@
+using Administrator.API.Middleware;
 using Administrator.Application;
 using Administrator.Identity;
 using Administrator.Infrastructure;
@@ -34,6 +35,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseAuthentication();
 
