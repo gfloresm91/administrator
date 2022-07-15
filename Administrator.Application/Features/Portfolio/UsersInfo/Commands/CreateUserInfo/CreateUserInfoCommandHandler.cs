@@ -1,5 +1,5 @@
 ﻿using Administrator.Application.Contracts.Infrastructure;
-using Administrator.Application.Contracts.Persistence.Portfolio;
+using Administrator.Application.Contracts.Persistence;
 using Administrator.Application.Models;
 using Administrator.Domain.Portfolio;
 using AutoMapper;
@@ -10,14 +10,14 @@ namespace Administrator.Application.Features.Portfolio.UsersInfo.Commands.Create
 {
     public class CreateUserInfoCommandHandler : IRequestHandler<CreateUserInfoCommand, int>
     {
-        private readonly IUserInfoRepository _userInfoRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IEmailService _emailService;
         private readonly ILogger<CreateUserInfoCommandHandler> _logger;
 
-        public CreateUserInfoCommandHandler(IUserInfoRepository userInfoRepository, IMapper mapper, IEmailService emailService, ILogger<CreateUserInfoCommandHandler> logger)
+        public CreateUserInfoCommandHandler(IUnitOfWork unitOfWork, IMapper mapper, IEmailService emailService, ILogger<CreateUserInfoCommandHandler> logger)
         {
-            _userInfoRepository = userInfoRepository;
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
             _emailService = emailService;
             _logger = logger;
@@ -26,13 +26,22 @@ namespace Administrator.Application.Features.Portfolio.UsersInfo.Commands.Create
         public async Task<int> Handle(CreateUserInfoCommand request, CancellationToken cancellationToken)
         {
             var userInfoEntity = _mapper.Map<UserInfo>(request);
-            var newUserInfo = await _userInfoRepository.AddAsync(userInfoEntity);
 
-            _logger.LogInformation($"User info {newUserInfo.Id} created succesful");
+            _unitOfWork.Repository<UserInfo>().AddEntity(userInfoEntity);
 
-            await SendEmail(newUserInfo);
+            var result = await _unitOfWork.Complete();
 
-            return newUserInfo.Id;
+            if (result <= 0)
+            {
+                _logger.LogError("User info not created");
+                throw new Exception("User info not created");
+            }
+            
+            _logger.LogInformation($"User info {userInfoEntity.Id} created succesful");
+
+            await SendEmail(userInfoEntity);
+
+            return userInfoEntity.Id;
         }
 
         private async Task SendEmail(UserInfo userInfo)

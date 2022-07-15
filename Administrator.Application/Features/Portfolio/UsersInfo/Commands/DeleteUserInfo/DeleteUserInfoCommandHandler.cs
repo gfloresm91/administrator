@@ -1,4 +1,4 @@
-﻿using Administrator.Application.Contracts.Persistence.Portfolio;
+﻿using Administrator.Application.Contracts.Persistence;
 using Administrator.Application.Exceptions;
 using Administrator.Domain.Portfolio;
 using AutoMapper;
@@ -9,20 +9,20 @@ namespace Administrator.Application.Features.Portfolio.UsersInfo.Commands.Delete
 {
     public class DeleteUserInfoCommandHandler : IRequestHandler<DeleteUserInfoCommand>
     {
-        private readonly IUserInfoRepository _userInfoRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly ILogger<DeleteUserInfoCommandHandler> _logger;
 
-        public DeleteUserInfoCommandHandler(IUserInfoRepository userInfoRepository, IMapper mapper, ILogger<DeleteUserInfoCommandHandler> logger)
+        public DeleteUserInfoCommandHandler(IUnitOfWork unitOfWork, IMapper mapper, ILogger<DeleteUserInfoCommandHandler> logger)
         {
-            _userInfoRepository = userInfoRepository;
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
             _logger = logger;
         }
 
         public async Task<Unit> Handle(DeleteUserInfoCommand request, CancellationToken cancellationToken)
         {
-            var userInfoToDelete = await _userInfoRepository.GetByIdAsync(request.Id);
+            var userInfoToDelete = await _unitOfWork.Repository<UserInfo>().GetByIdAsync(request.Id);
 
             if (userInfoToDelete == null)
             {
@@ -30,7 +30,9 @@ namespace Administrator.Application.Features.Portfolio.UsersInfo.Commands.Delete
                 throw new NotFoundException(nameof(UserInfo), request.Id);
             }
 
-            await _userInfoRepository.DeleteAsync(userInfoToDelete);
+            _unitOfWork.Repository<UserInfo>().DeleteEntity(userInfoToDelete);
+
+            await _unitOfWork.Complete();
 
             _logger.LogInformation($"User info {request.Id} deleted successful");
 

@@ -1,4 +1,4 @@
-﻿using Administrator.Application.Contracts.Persistence.Portfolio;
+﻿using Administrator.Application.Contracts.Persistence;
 using Administrator.Application.Exceptions;
 using Administrator.Domain.Portfolio;
 using AutoMapper;
@@ -9,20 +9,20 @@ namespace Administrator.Application.Features.Portfolio.UsersInfo.Commands.Update
 {
     public class UpdateUserInfoCommandHandler : IRequestHandler<UpdateUserInfoCommand>
     {
-        private readonly IUserInfoRepository _userInfoRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly ILogger<UpdateUserInfoCommandHandler> _logger;
 
-        public UpdateUserInfoCommandHandler(IUserInfoRepository userInfoRepository, IMapper mapper, ILogger<UpdateUserInfoCommandHandler> logger)
+        public UpdateUserInfoCommandHandler(IUnitOfWork unitOfWork, IMapper mapper, ILogger<UpdateUserInfoCommandHandler> logger)
         {
-            _userInfoRepository = userInfoRepository;
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
             _logger = logger;
         }
 
         public async Task<Unit> Handle(UpdateUserInfoCommand request, CancellationToken cancellationToken)
         {
-            var userInfoToUpdate = await _userInfoRepository.GetByIdAsync(request.Id);
+            var userInfoToUpdate = await _unitOfWork.Repository<UserInfo>().GetByIdAsync(request.Id);
 
             if (userInfoToUpdate == null)
             {
@@ -32,7 +32,9 @@ namespace Administrator.Application.Features.Portfolio.UsersInfo.Commands.Update
 
             _mapper.Map(request, userInfoToUpdate, typeof(UpdateUserInfoCommand), typeof(UserInfo));
 
-            await _userInfoRepository.UpdateAsync(userInfoToUpdate);
+            _unitOfWork.Repository<UserInfo>().UpdateEntity(userInfoToUpdate);
+
+            await _unitOfWork.Complete();
 
             _logger.LogInformation($"User info {request.Id} updated successful");
 
