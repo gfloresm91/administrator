@@ -15,6 +15,8 @@ namespace Administrator.Infrastructure.Repositories
             _context = context;
         }
 
+        public PortfolioDbContext PortfolioDbContext => _context;
+
         public async Task<int> Complete()
         {
             return await _context.SaveChangesAsync();
