@@ -1,6 +1,8 @@
 ﻿using Administrator.Application.Features.Portfolio.UsersInfo.Commands.CreateUserInfo;
 using Administrator.Application.Features.Portfolio.UsersInfo.Commands.DeleteUserInfo;
 using Administrator.Application.Features.Portfolio.UsersInfo.Commands.UpdateUserInfo;
+using Administrator.Application.Features.Portfolio.UsersInfo.Queries.GetUserInfoList;
+using Administrator.Domain.Portfolio;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,6 +21,17 @@ namespace Administrator.API.Controllers.Portfolio
         {
             _mediator = mediator;
         }
+
+        [HttpGet(Name = "GetUsersInfo")]
+        [ProducesResponseType(typeof(IEnumerable<UserInfo>), (int)HttpStatusCode.OK)]
+        public async Task<ActionResult<IEnumerable<UserInfo>>> GetUsersinfo()
+        {
+            var query = new GetUserInfoListQuery();
+            var usersInfo = await _mediator.Send(query);
+
+            return Ok(usersInfo);
+        }
+
 
         [HttpPost(Name = "CreateUserInfo")]
         [ProducesResponseType((int) HttpStatusCode.OK)]
