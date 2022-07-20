@@ -4,6 +4,7 @@ using Administrator.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Administrator.Infrastructure.Migrations.PortfolioMigrations
 {
     [DbContext(typeof(PortfolioDbContext))]
-    partial class PortfolioDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220718002619_PortfolioSecondMigration")]
+    partial class PortfolioSecondMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -46,12 +48,7 @@ namespace Administrator.Infrastructure.Migrations.PortfolioMigrations
                     b.Property<DateTime?>("LastModifiedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("UserInfoId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserInfoId");
 
                     b.ToTable("Skills");
                 });
@@ -74,14 +71,14 @@ namespace Administrator.Infrastructure.Migrations.PortfolioMigrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("IdSkill")
+                        .HasColumnType("int");
+
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("LastModifiedDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<int>("SkillId")
-                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -89,7 +86,7 @@ namespace Administrator.Infrastructure.Migrations.PortfolioMigrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("SkillId");
+                    b.HasIndex("IdSkill");
 
                     b.ToTable("SkillsDetails");
                 });
@@ -108,6 +105,9 @@ namespace Administrator.Infrastructure.Migrations.PortfolioMigrations
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("IdSkillDetail")
+                        .HasColumnType("int");
+
                     b.Property<string>("Item")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -118,12 +118,9 @@ namespace Administrator.Infrastructure.Migrations.PortfolioMigrations
                     b.Property<DateTime?>("LastModifiedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("SkillDetailId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("SkillDetailId");
+                    b.HasIndex("IdSkillDetail");
 
                     b.ToTable("SkillsItems");
                 });
@@ -162,22 +159,11 @@ namespace Administrator.Infrastructure.Migrations.PortfolioMigrations
                     b.ToTable("UsersInfo");
                 });
 
-            modelBuilder.Entity("Administrator.Domain.Portfolio.Skill", b =>
-                {
-                    b.HasOne("Administrator.Domain.Portfolio.UserInfo", "UserInfo")
-                        .WithMany("Skills")
-                        .HasForeignKey("UserInfoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("UserInfo");
-                });
-
             modelBuilder.Entity("Administrator.Domain.Portfolio.SkillDetail", b =>
                 {
                     b.HasOne("Administrator.Domain.Portfolio.Skill", "Skill")
                         .WithMany("SkillsDetails")
-                        .HasForeignKey("SkillId")
+                        .HasForeignKey("IdSkill")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -188,7 +174,7 @@ namespace Administrator.Infrastructure.Migrations.PortfolioMigrations
                 {
                     b.HasOne("Administrator.Domain.Portfolio.SkillDetail", "SkillDetail")
                         .WithMany("SkillsItems")
-                        .HasForeignKey("SkillDetailId")
+                        .HasForeignKey("IdSkillDetail")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -203,11 +189,6 @@ namespace Administrator.Infrastructure.Migrations.PortfolioMigrations
             modelBuilder.Entity("Administrator.Domain.Portfolio.SkillDetail", b =>
                 {
                     b.Navigation("SkillsItems");
-                });
-
-            modelBuilder.Entity("Administrator.Domain.Portfolio.UserInfo", b =>
-                {
-                    b.Navigation("Skills");
                 });
 #pragma warning restore 612, 618
         }

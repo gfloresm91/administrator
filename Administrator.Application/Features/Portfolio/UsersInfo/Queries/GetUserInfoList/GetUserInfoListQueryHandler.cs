@@ -18,7 +18,7 @@ namespace Administrator.Application.Features.Portfolio.UsersInfo.Queries.GetUser
 
         public async Task<List<UserInfo>> Handle(GetUserInfoListQuery request, CancellationToken cancellationToken)
         {
-            var userInfoList = await _unitOfWork.Repository<UserInfo>().GetAllAsync();
+            var userInfoList = await _unitOfWork.Repository<UserInfo>().GetAsync(null, null, "Skills");
 
             return _mapper.Map<List<UserInfo>>(userInfoList);
         }
