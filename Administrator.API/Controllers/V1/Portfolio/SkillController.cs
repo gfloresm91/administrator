@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
-namespace Administrator.API.Controllers.Portfolio
+namespace Administrator.API.Controllers.Portfolio.V1
 {
     [ApiController]
     [Authorize]
@@ -20,17 +20,27 @@ namespace Administrator.API.Controllers.Portfolio
             _mediator = mediator;
         }
 
+        /// <summary>
+        /// Get skills
+        /// </summary>
+        /// <returns>Return skills object</returns>
         [HttpGet(Name = "GetSkills")]
-        [ProducesResponseType(typeof(IEnumerable<Skill>), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult<IEnumerable<Skill>>> GetSkills()
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        [AllowAnonymous]
+        public async Task<ActionResult<IEnumerable<SkillVm>>> GetSkills()
         {
             var query = new GetSkillListQuery();
             var skills = await _mediator.Send(query);
             return Ok(skills);
         }
 
+        /// <summary>
+        /// Create skill
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns>Return new skill id</returns>
         [HttpPost(Name = "CreateSkill")]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         public async Task<ActionResult<int>> CreateSkill([FromBody] CreateSkillCommand command)
         {
             return await _mediator.Send(command);

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Administrator.Infrastructure.Migrations.PortfolioMigrations
+namespace Administrator.Infrastructure.Migrations
 {
     [DbContext(typeof(PortfolioDbContext))]
     partial class PortfolioDbContextModelSnapshot : ModelSnapshot

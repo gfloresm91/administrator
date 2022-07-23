@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Administrator.Infrastructure.Migrations.PortfolioMigrations
+namespace Administrator.Infrastructure.Migrations
 {
     [DbContext(typeof(PortfolioDbContext))]
-    [Migration("20220719011339_PortfolioThirdMigration")]
-    partial class PortfolioThirdMigration
+    [Migration("20220722014745_FirstMigration")]
+    partial class FirstMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

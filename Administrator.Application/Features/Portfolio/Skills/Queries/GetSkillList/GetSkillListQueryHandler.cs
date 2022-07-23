@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Administrator.Application.Features.Portfolio.Skills.Queries.GetSkillList
 {
-    public class GetSkillListQueryHandler : IRequestHandler<GetSkillListQuery, List<Skill>>
+    public class GetSkillListQueryHandler : IRequestHandler<GetSkillListQuery, List<SkillVm>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -16,11 +16,11 @@ namespace Administrator.Application.Features.Portfolio.Skills.Queries.GetSkillLi
             _mapper = mapper;
         }
 
-        public async Task<List<Skill>> Handle(GetSkillListQuery request, CancellationToken cancellationToken)
+        public async Task<List<SkillVm>> Handle(GetSkillListQuery request, CancellationToken cancellationToken)
         {
             var skillList = await _unitOfWork.Repository<Skill>().GetAsync(null, null, "UserInfo");
 
-            return _mapper.Map<List<Skill>>(skillList);
+            return _mapper.Map<List<SkillVm>>(skillList);
         }
     }
 }

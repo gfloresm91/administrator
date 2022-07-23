@@ -5,12 +5,13 @@ namespace Administrator.Infrastructure.Persistence
 {
     public class PortfolioDbContextSeed
     {
-        public static async Task SeedAsync(PortfolioDbContext context, ILogger<PortfolioDbContextSeed> logger)
+        public static async Task SeedAsync(PortfolioDbContext context, ILoggerFactory loggerFactory)
         {
             if (!context.UsersInfo!.Any())
             {
-                context.UsersInfo!.AddRange(GetPreconfiguredUserInfo());
-                await context.SaveChangesAsync();
+                var logger = loggerFactory.CreateLogger<PortfolioDbContextSeed>();
+                //context.UsersInfo!.AddRange(GetPreconfiguredUserInfo());
+                //await context.SaveChangesAsync();
                 logger.LogInformation("Insert new records to db {context}", typeof(PortfolioDbContext).Name);
             }
         }

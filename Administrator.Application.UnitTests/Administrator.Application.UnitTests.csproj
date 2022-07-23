@@ -22,7 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Administrator.Application\Administrator.Application.csproj" />
-    <ProjectReference Include="..\Administrator.Data\Administrator.Infrastructure.csproj" />
+    <ProjectReference Include="..\Administrator.Infrastructure\Administrator.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

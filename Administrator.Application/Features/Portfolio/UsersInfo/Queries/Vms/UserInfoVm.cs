@@ -1,6 +1,6 @@
 ﻿using Administrator.Application.Features.Portfolio.Skills.Queries.GetSkillList;
 
-namespace Administrator.Application.Features.Portfolio.UsersInfo.Queries.GetUserInfoList
+namespace Administrator.Application.Features.Portfolio.UsersInfo.Queries.Vms
 {
     public class UserInfoVm
     {

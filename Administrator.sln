@@ -17,7 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastru
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Administrator.Domain", "Administrator.Domain\Administrator.Domain.csproj", "{CA923BB3-6D33-46B5-B1FE-457E66E91926}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Administrator.Infrastructure", "Administrator.Data\Administrator.Infrastructure.csproj", "{7DE13A8B-A4A4-4234-BFA9-EBBD226DFD8F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Administrator.Infrastructure", "Administrator.Infrastructure\Administrator.Infrastructure.csproj", "{7DE13A8B-A4A4-4234-BFA9-EBBD226DFD8F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Administrator.API", "Administrator.API\Administrator.API.csproj", "{88847C26-6A1A-4D16-9B07-4B1FECDB134D}"
 EndProject
@@ -25,7 +25,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Administrator.Application",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Administrator.Identity", "Administrator.Identity\Administrator.Identity.csproj", "{AFDB552D-4497-452E-8CFD-585C13CBFCD8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Administrator.Application.UnitTests", "Administrator.Application.UnitTests\Administrator.Application.UnitTests.csproj", "{29D70B4F-C322-4749-B084-41F8E05A3CFE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Administrator.Application.UnitTests", "Administrator.Application.UnitTests\Administrator.Application.UnitTests.csproj", "{29D70B4F-C322-4749-B084-41F8E05A3CFE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
