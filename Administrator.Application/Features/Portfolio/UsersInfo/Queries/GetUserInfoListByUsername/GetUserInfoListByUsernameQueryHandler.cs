@@ -1,5 +1,6 @@
 ﻿using Administrator.Application.Contracts.Persistence;
 using Administrator.Application.Features.Portfolio.UsersInfo.Queries.Vms;
+using Administrator.Application.Specifications.UsersInfo;
 using Administrator.Domain.Portfolio;
 using AutoMapper;
 using MediatR;
@@ -20,15 +21,18 @@ namespace Administrator.Application.Features.Portfolio.UsersInfo.Queries.GetUser
 
         public async Task<List<UserInfoVm>> Handle(GetUserInfoListByUsernameQuery request, CancellationToken cancellationToken)
         {
-            var includes = new List<Expression<Func<UserInfo, object>>>();
-            includes.Add(p => p.Skills!);
+            //var includes = new List<Expression<Func<UserInfo, object>>>();
+            //includes.Add(p => p.Skills!);
 
-            var userInfoList = await _unitOfWork.Repository<UserInfo>().GetAsync(
-                userInfo => userInfo.CreatedBy == request.Username,
-                userInfo => userInfo.OrderBy(x => x.CreatedDate),
-                includes,
-                true
-                );
+            //var userInfoList = await _unitOfWork.Repository<UserInfo>().GetAsync(
+            //    userInfo => userInfo.CreatedBy == request.Username,
+            //    userInfo => userInfo.OrderBy(x => x.CreatedDate),
+            //    includes,
+            //    true
+            //    );
+
+            var spec = new UsersInfoWithSkillsSpecification(request.Username!);
+            var userInfoList = await _unitOfWork.Repository<UserInfo>().GetAllWithSpec(spec);
 
             return _mapper.Map<List<UserInfoVm>>(userInfoList);
         }

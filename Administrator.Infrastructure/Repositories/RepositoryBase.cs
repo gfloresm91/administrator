@@ -1,6 +1,8 @@
 ﻿using Administrator.Application.Contracts.Persistence;
+using Administrator.Application.Specifications;
 using Administrator.Domain.Common;
 using Administrator.Infrastructure.Persistence;
+using Administrator.Infrastructure.Specification;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -101,6 +103,26 @@ namespace Administrator.Infrastructure.Repositories
         public void DeleteEntity(T entity)
         {
             _context.Set<T>().Remove(entity);
+        }
+
+        public async Task<T> GetByIdWithSpec(ISpecification<T> spec)
+        {
+            return await ApplySpecification(spec).FirstOrDefaultAsync();
+        }
+
+        public async Task<IReadOnlyCollection<T>> GetAllWithSpec(ISpecification<T> spec)
+        {
+            return await ApplySpecification(spec).ToListAsync();
+        }
+
+        public async Task<int> CountAsync(ISpecification<T> spec)
+        {
+            return await ApplySpecification(spec).CountAsync();
+        }
+
+        public IQueryable<T> ApplySpecification(ISpecification<T> spec)
+        {
+            return SpecificationEvaluator<T>.GetQuery(_context.Set<T>().AsQueryable(), spec);
         }
     }
 }

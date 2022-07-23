@@ -31,7 +31,7 @@ namespace Administrator.API.Controllers.Portfolio.V1
         [HttpGet(Name = "GetUsersInfo")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         [AllowAnonymous]
-        public async Task<ActionResult<IEnumerable<UserInfo>>> GetUsersInfo()
+        public async Task<ActionResult<IEnumerable<UserInfoVm>>> GetUsersInfo()
         {
             var query = new GetUserInfoListQuery();
             var usersInfo = await _mediator.Send(query);
@@ -39,7 +39,12 @@ namespace Administrator.API.Controllers.Portfolio.V1
             return Ok(usersInfo);
         }
 
-        [HttpGet("byusername/{username}", Name = "GetUsersInfoByUsername")]
+        /// <summary>
+        /// Get users info by username
+        /// </summary>
+        /// <param name="username">User info username</param>
+        /// <returns>User info object filter by username</returns>
+        [HttpGet("ByUsername/{username}", Name = "GetUsersInfoByUsername")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<UserInfoVm>>> GetUsersInfoByUsername(string username)

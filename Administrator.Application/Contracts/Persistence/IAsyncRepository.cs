@@ -1,4 +1,5 @@
-﻿using Administrator.Domain.Common;
+﻿using Administrator.Application.Specifications;
+using Administrator.Domain.Common;
 using System.Linq.Expressions;
 
 namespace Administrator.Application.Contracts.Persistence
@@ -23,5 +24,9 @@ namespace Administrator.Application.Contracts.Persistence
         void AddEntity(T entity);
         void UpdateEntity(T entity);
         void DeleteEntity(T entity);
+
+        Task<T> GetByIdWithSpec(ISpecification<T> spec);
+        Task<IReadOnlyCollection<T>> GetAllWithSpec(ISpecification<T> spec);
+        Task<int> CountAsync(ISpecification<T> spec);
     }
 }
