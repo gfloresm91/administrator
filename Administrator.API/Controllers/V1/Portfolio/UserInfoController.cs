@@ -3,7 +3,9 @@ using Administrator.Application.Features.Portfolio.UsersInfo.Commands.DeleteUser
 using Administrator.Application.Features.Portfolio.UsersInfo.Commands.UpdateUserInfo;
 using Administrator.Application.Features.Portfolio.UsersInfo.Queries.GetUserInfoList;
 using Administrator.Application.Features.Portfolio.UsersInfo.Queries.GetUserInfoListByUsername;
+using Administrator.Application.Features.Portfolio.UsersInfo.Queries.PaginationUserInfo;
 using Administrator.Application.Features.Portfolio.UsersInfo.Queries.Vms;
+using Administrator.Application.Features.Shared.Queries;
 using Administrator.Domain.Portfolio;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -37,6 +39,17 @@ namespace Administrator.API.Controllers.Portfolio.V1
             var usersInfo = await _mediator.Send(query);
 
             return Ok(usersInfo);
+        }
+
+        [HttpGet("pagination", Name = "GetPaginationUsersInfo")]
+        [Produces(typeof(PaginationVm<UserInfoWithIncludesVm>))]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        [AllowAnonymous]
+        public async Task<ActionResult<PaginationVm<UserInfoWithIncludesVm>>> GetPaginationUsersInfo([FromQuery] PaginationUserInfoQuery paginationUserInfoQuery)
+        {
+            var paginationUserInfo = await _mediator.Send(paginationUserInfoQuery);
+
+            return Ok(paginationUserInfo);
         }
 
         /// <summary>

@@ -15,6 +15,7 @@ namespace Administrator.Application.Mappings
             CreateMap<CreateUserInfoCommand, UserInfo>();
             CreateMap<UpdateUserInfoCommand, UserInfo>();
             CreateMap<UserInfo, UserInfoVm>();
+            CreateMap<UserInfo, UserInfoWithIncludesVm>();
 
             CreateMap<Skill, SkillVm>();
             CreateMap<CreateSkillCommand, Skill>();
