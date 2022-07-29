@@ -44,7 +44,6 @@ namespace Administrator.API.Controllers.Portfolio.V1
         [HttpGet("pagination", Name = "GetPaginationUsersInfo")]
         [Produces(typeof(PaginationVm<UserInfoWithIncludesVm>))]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        [AllowAnonymous]
         public async Task<ActionResult<PaginationVm<UserInfoWithIncludesVm>>> GetPaginationUsersInfo([FromQuery] PaginationUserInfoQuery paginationUserInfoQuery)
         {
             var paginationUserInfo = await _mediator.Send(paginationUserInfoQuery);
@@ -59,7 +58,6 @@ namespace Administrator.API.Controllers.Portfolio.V1
         /// <returns>User info object filter by username</returns>
         [HttpGet("ByUsername/{username}", Name = "GetUsersInfoByUsername")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<UserInfoVm>>> GetUsersInfoByUsername(string username)
         {
             var query = new GetUserInfoListByUsernameQuery(username);

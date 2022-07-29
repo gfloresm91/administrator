@@ -38,5 +38,12 @@ namespace Administrator.API.Controllers.Security.V1
         {
             return Ok(await _authService.Register(request));
         }
+
+        [HttpPost("RefreshToken")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
+        public async Task<ActionResult<AuthResponse>> RefreshToken([FromBody] TokenRequest request)
+        {
+            return Ok(await _authService.RefreshToken(request));
+        }
     }
 }

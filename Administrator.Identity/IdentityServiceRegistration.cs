@@ -23,28 +23,44 @@ namespace Administrator.Identity
                 b=> b.MigrationsAssembly(typeof(AdministratorIdentityDbContext).Assembly.FullName))
             );
 
-            services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<AdministratorIdentityDbContext>().AddDefaultTokenProviders();
+            services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddEntityFrameworkStores<AdministratorIdentityDbContext>();
 
             services.AddTransient<IAuthService, AuthService>();
+
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.Zero,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration["JwtSettings:key"]))
+            };
+
+            services.AddSingleton(tokenValidationParameters);
 
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(options =>
             {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ClockSkew = TimeSpan.Zero,
-                    ValidIssuer = configuration["JwtSettings:Issuer"],
-                    ValidAudience = configuration["JwtSettings:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSettings:key"]))
-                };
+                options.SaveToken = true;
+                options.TokenValidationParameters = tokenValidationParameters;
+
+                //options.TokenValidationParameters = new TokenValidationParameters
+                //{
+                //    ValidateIssuerSigningKey = true,
+                //    ValidateIssuer = true,
+                //    ValidateAudience = true,
+                //    ValidateLifetime = true,
+                //    ClockSkew = TimeSpan.Zero,
+                //    ValidIssuer = configuration["JwtSettings:Issuer"],
+                //    ValidAudience = configuration["JwtSettings:Audience"],
+                //    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSettings:key"]))
+                //};
             });
 
             return services;
