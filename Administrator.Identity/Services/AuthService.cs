@@ -1,10 +1,12 @@
 ﻿using Administrator.Application.Contracts.Identity;
+using Administrator.Application.Exceptions;
 using Administrator.Application.Models.Identity;
 using Administrator.Identity.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -40,14 +42,14 @@ namespace Administrator.Identity.Services
 
             if (user == null)
             {
-                throw new Exception($"El usuario con email {request.Email} no existe");
+                throw new ValidationException(new List<string> { $"El usuario con email {request.Email} no existe" });
             }
 
             var result = await _signInManager.PasswordSignInAsync(user.UserName, request.Password, false, lockoutOnFailure: false);
 
             if (!result.Succeeded)
             {
-                throw new Exception($"Las credenciales son incorrectas");
+                throw new ValidationException(new List<string> { $"Las credenciales son incorrectas" });
             }
 
             var token = await GenerateToken(user);
@@ -241,14 +243,14 @@ namespace Administrator.Identity.Services
 
             if (existingUser != null)
             {
-                throw new Exception($"El nombre de usuario {request.UserName} ya existe");
+                throw new ValidationException(new List<string> { $"El nombre de usuario {request.UserName} ya existe" });
             }
 
             var existingEmail = await _userManager.FindByEmailAsync(request.Email);
 
             if (existingEmail != null)
             {
-                throw new Exception($"El email {request.Email} ya existe");
+                throw new ValidationException(new List<string> { $"El email {request.Email} ya existe" });
             }
 
             var user = new IdentityUser
@@ -287,9 +289,9 @@ namespace Administrator.Identity.Services
                 };
             }
 
-            throw new Exception($"{result.Errors}");
+            throw new ValidationException(result.Errors.Select(x => x.Description));
         }
-    
+
         private async Task<Tuple<string, string>> GenerateToken(IdentityUser user)
         {
             var jwtTokenHandler = new JwtSecurityTokenHandler();

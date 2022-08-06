@@ -1,6 +1,6 @@
-﻿using Administrator.Application.Features.Portfolio.Skills.Commands.CreateSkill;
+﻿using Administrator.API.Errors;
+using Administrator.Application.Features.Portfolio.Skills.Commands.CreateSkill;
 using Administrator.Application.Features.Portfolio.Skills.Queries.GetSkillList;
-using Administrator.Domain.Portfolio;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -23,9 +23,11 @@ namespace Administrator.API.Controllers.Portfolio.V1
         /// <summary>
         /// Get skills
         /// </summary>
-        /// <returns>Return skills object</returns>
+        /// <returns>Return list of skills object</returns>
         [HttpGet(Name = "GetSkills")]
-        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        [ProducesResponseType(typeof(IEnumerable<SkillVm>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(CodeErrorResponse), (int)HttpStatusCode.InternalServerError)]
         [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<SkillVm>>> GetSkills()
         {
@@ -37,10 +39,12 @@ namespace Administrator.API.Controllers.Portfolio.V1
         /// <summary>
         /// Create skill
         /// </summary>
-        /// <param name="command"></param>
+        /// <param name="command">CreateSkillCommand object</param>
         /// <returns>Return new skill id</returns>
         [HttpPost(Name = "CreateSkill")]
-        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
+        [ProducesResponseType(typeof(int), (int)HttpStatusCode.Created)]
+        [ProducesResponseType(typeof(CodeErrorResponse), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(CodeErrorResponse), (int)HttpStatusCode.InternalServerError)]
         public async Task<ActionResult<int>> CreateSkill([FromBody] CreateSkillCommand command)
         {
             return await _mediator.Send(command);

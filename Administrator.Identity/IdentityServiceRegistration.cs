@@ -1,5 +1,6 @@
 ﻿using Administrator.Application.Contracts.Identity;
 using Administrator.Application.Models.Identity;
+using Administrator.Identity.Errors;
 using Administrator.Identity.Models;
 using Administrator.Identity.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -24,7 +25,8 @@ namespace Administrator.Identity
             );
 
             services.AddIdentity<IdentityUser, IdentityRole>()
-                .AddEntityFrameworkStores<AdministratorIdentityDbContext>();
+                .AddEntityFrameworkStores<AdministratorIdentityDbContext>()
+                .AddErrorDescriber<SpanishIdentityErrorDescriber>();
 
             services.AddTransient<IAuthService, AuthService>();
 

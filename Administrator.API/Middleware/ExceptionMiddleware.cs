@@ -37,7 +37,16 @@ namespace Administrator.API.Middleware
 
                     case ValidationException validationException:
                         statusCode = (int)HttpStatusCode.BadRequest;
-                        var validationJson = JsonConvert.SerializeObject(validationException.Errors);
+
+                        var validationJson = string.Empty;
+                        if (validationException.ErrorsIdentity.Any())
+                        {
+                            validationJson = JsonConvert.SerializeObject(validationException.ErrorsIdentity);
+                        } else
+                        {
+                            validationJson = JsonConvert.SerializeObject(validationException.Errors);
+                        }
+
                         result = JsonConvert.SerializeObject(new CodeErrorException(statusCode, ex.Message, validationJson));
                         break;
 

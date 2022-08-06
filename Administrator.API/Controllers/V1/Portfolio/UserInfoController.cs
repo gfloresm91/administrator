@@ -1,4 +1,5 @@
-﻿using Administrator.Application.Features.Portfolio.UsersInfo.Commands.CreateUserInfo;
+﻿using Administrator.API.Errors;
+using Administrator.Application.Features.Portfolio.UsersInfo.Commands.CreateUserInfo;
 using Administrator.Application.Features.Portfolio.UsersInfo.Commands.DeleteUserInfo;
 using Administrator.Application.Features.Portfolio.UsersInfo.Commands.UpdateUserInfo;
 using Administrator.Application.Features.Portfolio.UsersInfo.Queries.GetUserInfoList;
@@ -6,7 +7,6 @@ using Administrator.Application.Features.Portfolio.UsersInfo.Queries.GetUserInfo
 using Administrator.Application.Features.Portfolio.UsersInfo.Queries.PaginationUserInfo;
 using Administrator.Application.Features.Portfolio.UsersInfo.Queries.Vms;
 using Administrator.Application.Features.Shared.Queries;
-using Administrator.Domain.Portfolio;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -29,9 +29,11 @@ namespace Administrator.API.Controllers.Portfolio.V1
         /// <summary>
         /// Get users info
         /// </summary>
-        /// <returns>User info object</returns>
+        /// <returns>List user info object</returns>
         [HttpGet(Name = "GetUsersInfo")]
-        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        [ProducesResponseType(typeof(IEnumerable<UserInfoVm>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(CodeErrorResponse), (int)HttpStatusCode.InternalServerError)]
         [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<UserInfoVm>>> GetUsersInfo()
         {
@@ -41,9 +43,15 @@ namespace Administrator.API.Controllers.Portfolio.V1
             return Ok(usersInfo);
         }
 
-        [HttpGet("pagination", Name = "GetPaginationUsersInfo")]
-        [Produces(typeof(PaginationVm<UserInfoWithIncludesVm>))]
-        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        /// <summary>
+        /// Get users info with pagination
+        /// </summary>
+        /// <param name="paginationUserInfoQuery">PaginationUserInfoQuery object</param>
+        /// <returns>User info with relations and pagination</returns>
+        [HttpGet("Pagination", Name = "GetPaginationUsersInfo")]
+        [ProducesResponseType(typeof(PaginationVm<UserInfoWithIncludesVm>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(CodeErrorResponse), (int)HttpStatusCode.InternalServerError)]
         public async Task<ActionResult<PaginationVm<UserInfoWithIncludesVm>>> GetPaginationUsersInfo([FromQuery] PaginationUserInfoQuery paginationUserInfoQuery)
         {
             var paginationUserInfo = await _mediator.Send(paginationUserInfoQuery);
@@ -55,9 +63,11 @@ namespace Administrator.API.Controllers.Portfolio.V1
         /// Get users info by username
         /// </summary>
         /// <param name="username">User info username</param>
-        /// <returns>User info object filter by username</returns>
+        /// <returns>User info object filtered by username</returns>
         [HttpGet("ByUsername/{username}", Name = "GetUsersInfoByUsername")]
-        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        [ProducesResponseType(typeof(IEnumerable<UserInfoVm>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(CodeErrorResponse), (int)HttpStatusCode.InternalServerError)]
         public async Task<ActionResult<IEnumerable<UserInfoVm>>> GetUsersInfoByUsername(string username)
         {
             var query = new GetUserInfoListByUsernameQuery(username);
@@ -69,10 +79,12 @@ namespace Administrator.API.Controllers.Portfolio.V1
         /// <summary>
         /// Create user info
         /// </summary>
-        /// <param name="command"></param>
-        /// <returns>Return new id crated</returns>
+        /// <param name="command">CreateUserInfoCommand object</param>
+        /// <returns>Return new id created</returns>
         [HttpPost(Name = "CreateUserInfo")]
-        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
+        [ProducesResponseType(typeof(int), (int)HttpStatusCode.Created)]
+        [ProducesResponseType(typeof(CodeErrorResponse), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(CodeErrorResponse), (int)HttpStatusCode.InternalServerError)]
         public async Task<ActionResult<int>> CreateUserInfo([FromBody] CreateUserInfoCommand command)
         {
             return await _mediator.Send(command);
@@ -81,11 +93,13 @@ namespace Administrator.API.Controllers.Portfolio.V1
         /// <summary>
         /// Update user info
         /// </summary>
-        /// <param name="command"></param>
+        /// <param name="command">UpdateUserInfoCommand object</param>
         /// <returns>Return no content</returns>
         [HttpPut(Name = "UpdateUserInfo")]
-        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
-
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
+        [ProducesResponseType(typeof(CodeErrorResponse), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(CodeErrorResponse), (int)HttpStatusCode.InternalServerError)]
         public async Task<ActionResult> UpdateUserInfo([FromBody] UpdateUserInfoCommand command)
         {
             await _mediator.Send(command);
@@ -97,9 +111,12 @@ namespace Administrator.API.Controllers.Portfolio.V1
         /// Delete user info
         /// </summary>
         /// <param name="id">User info id</param>
-        /// <returns>Return no content</returns>
+        /// <returns>Return ok without content</returns>
         [HttpDelete("{id}", Name = "DeleteUserInfo")]
-        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(CodeErrorResponse), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(CodeErrorResponse), (int)HttpStatusCode.InternalServerError)]
         public async Task<ActionResult> DeleteUserInfo(int id)
         {
             var command = new DeleteUserInfoCommand
